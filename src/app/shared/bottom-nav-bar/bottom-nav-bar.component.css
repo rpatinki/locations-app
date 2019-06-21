@@ -1,0 +1,21 @@
+.bottom-nav-container {
+    background-color: #f5f7f8;
+    width: 100%;
+    height: 100px;
+  }
+  
+  .bottom-nav-buttons {
+      background-color: #1b81d7;
+      -webkit-flex-basis: 300px;
+      flex-basis: 300px;
+      color: white;
+      font-size: 35px;
+      text-align: center;
+      padding-top: 30px;
+      cursor: pointer;
+  }
+  
+  .bottom-nav-buttons:hover{
+      background-color: #6060ef
+  }
+  

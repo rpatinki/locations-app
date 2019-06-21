@@ -1,0 +1,42 @@
+<p-toolbar>
+  <div class="ui-toolbar-group-left">
+      <h2>{{header}}</h2>
+  </div>
+  <div  style="margin-left: 100px" class="ui-toolbar-group-left">
+      <button 
+        pButton 
+        (click)="emitToolBarEvent('add')" 
+        type="button" 
+        icon="pi pi-plus"
+        [pTooltip]="'add ' + getType()"
+        class="mr-1">
+      </button>
+      <button 
+        pButton 
+        (click)="emitToolBarEvent('edit')" 
+        type="button"
+        [disabled]="!isSelectedItem" 
+        icon="pi pi-pencil"
+        [pTooltip]="'edit ' + getType()"
+        class="mr-1" >
+      </button>
+      <button 
+        pButton 
+        (click)="emitToolBarEvent('view')" 
+        type="button"
+        [disabled]="!isSelectedItem" 
+        icon="pi pi-eye"
+        [pTooltip]="'view ' + getType()"
+        class="mr-1" >
+      </button>
+      <button 
+        pButton 
+        (click)="emitToolBarEvent('delete')" 
+        type="button" 
+        icon="pi pi-trash"
+        [pTooltip]="'delete ' + getType()" 
+        [disabled]="!isSelectedItem"
+        class="mr-1">
+      </button>
+  </div>
+</p-toolbar>

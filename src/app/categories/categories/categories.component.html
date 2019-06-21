@@ -1,0 +1,17 @@
+<app-tool-bar [header]="'Categories'" [isSelectedItem]="isSelected()" (toolBarEvent)="handleToolBarEvent($event)"></app-tool-bar>
+
+<div style="width: 60%" class="mt-5">
+  <p-orderList [value]="catergories" (onSelectionChange)="setSelectedCategory($event)">
+    <ng-template let-category pTemplate="item">
+      <div class="d-flex">
+        <div style="flex-basis: 40%">
+          <p class="list-object">{{category.name}}</p>
+        </div>
+        <div>
+          <p class="list-info">Loctions: {{category.locations.length}}</p>
+        </div>
+      </div>
+    </ng-template>
+  </p-orderList>
+</div>
+
