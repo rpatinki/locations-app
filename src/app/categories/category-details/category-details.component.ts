@@ -1,5 +1,6 @@
+import { Category } from './../../data models/category';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl} from '@angular/forms'
+import { FormGroup, Validators, AbstractControl, FormControl} from '@angular/forms'
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
 
 @Component({
@@ -11,26 +12,22 @@ export class CategoryDetailsComponent implements OnInit {
 
   categoryForm: FormGroup;
 
+  category: Category;
   editMode;
 
-  constructor(private fb: FormBuilder, public ref: DynamicDialogRef, public config: DynamicDialogConfig) {
-      this.categoryForm = this.fb.group({
-          name: [{value: '', disabled: true }]
-      });
+  constructor(public ref: DynamicDialogRef, public config: DynamicDialogConfig) {
   }
 
   ngOnInit() {
     
-    this.editMode = this.config.data.edit;
-    const name: AbstractControl = this.categoryForm.get('name');
+    this.category = this.config.data.category;
     
-    name.setValidators(Validators.required);
+    this.categoryForm = new FormGroup({
+      name: new FormControl(this.category? this.category.name : '', Validators.required),
+    });
 
-    if (this.config.data.edit) {
-      name.enable();
-    }
-
-    name.setValue(this.config.data.name)
+    this.editMode = this.config.data.edit;
+    this.editMode? this.categoryForm.enable() : this.categoryForm.disable();
   }
 
   onSubmit(){

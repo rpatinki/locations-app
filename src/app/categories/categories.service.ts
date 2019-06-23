@@ -1,11 +1,13 @@
+import { LocationsService } from './../locations/locations.service';
+import { Location } from './../data models/location';
 import { Category } from './../data models/category';
 import { Injectable } from '@angular/core';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable()
 export class CategoriesService {
 
-  readonly CATEGORIES = 'categories';
+  readonly CATEGORIES = 'AppCategories';
 
   idGenerate = 0;
 
@@ -14,6 +16,10 @@ export class CategoriesService {
   private categoriesSub = new BehaviorSubject <Category[]>([]);
 
   categories = this.categoriesSub.asObservable();
+  
+  private deleteLoctionsSub = new Subject <Location[]>();
+
+  deleteLocations = this.deleteLoctionsSub.asObservable();
 
   constructor() {
     this.onRefresh();
@@ -39,7 +45,23 @@ export class CategoriesService {
   }
   
   deleteCategory(id: number){
+    const category = this._catergories.find(cat=> cat.id === id);
+    if(category.locations && category.locations.length > 0){
+      this.deleteLoctionsSub.next(category.locations);
+    }
     this._catergories.splice(this._catergories.findIndex(cat=> cat.id === id));
+    this.categoriesSub.next(this._catergories);
+  }
+
+  removeLocationFromCategory(catId, location: Location){
+    let category: Category = this._catergories.find(cat => cat.id === catId);
+    category.locations.splice(category.locations.findIndex(loc => loc.id === location.id))
+    this.categoriesSub.next(this._catergories);
+  }
+
+  addLocationToCategory(catId, location: Location){
+    let category: Category = this._catergories.find(cat => cat.id === catId);
+    category.locations.push(location);
     this.categoriesSub.next(this._catergories);
   }
 

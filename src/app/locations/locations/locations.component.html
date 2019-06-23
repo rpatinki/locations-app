@@ -1,3 +1,26 @@
-<p>
-  locations works!
-</p>
+<app-tool-bar [header]="'Locations'" [isSelectedItem]="isSelected()" (toolBarEvent)="handleToolBarEvent($event)"></app-tool-bar>
+
+<div *ngIf="isCategories" style="width: 70%" class="mt-5">
+  <p-orderList [value]="locations" (onSelectionChange)="setSelectedLocation($event)">
+    <ng-template let-location pTemplate="item">
+      <div class="d-flex">
+        <div style="flex-basis: 40%">
+          <p class="list-object d-inline-block">{{location.name}}</p>
+          <button 
+            pButton 
+            (click)="showMap(location)" 
+            type="button"
+            icon="pi pi-map-marker"
+            [pTooltip]="'show on map'"
+            class="ml-3 pt-1 d-inline-block ui-button-secondary ui-button-raised" >
+        </button>
+        </div>
+        <div>
+          <p class="list-info">Category: {{location.category.name}}</p>
+        </div>
+      </div>
+    </ng-template>
+  </p-orderList>
+</div>
+
+<h1 *ngIf="!isCategories">You have to create a Category before creating a location</h1>

@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CategoryDetailsComponent } from '../category-details/category-details.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CategoriesService } from '../categories.service';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
 
 
 @NgModule({
@@ -23,9 +23,9 @@ import { CategoriesService } from '../categories.service';
     DynamicDialogModule,
     BrowserAnimationsModule, 
     ReactiveFormsModule,
-    ButtonModule
+    ButtonModule,
+    ConfirmDialogModule
   ],
-  providers:[CategoriesService],
   entryComponents: [
     CategoryDetailsComponent
   ]
