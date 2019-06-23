@@ -1,7 +1,8 @@
 <app-tool-bar [header]="'Locations'" [isSelectedItem]="isSelected()" (toolBarEvent)="handleToolBarEvent($event)"></app-tool-bar>
 
 <div *ngIf="isCategories" style="width: 70%" class="mt-5">
-  <p-orderList [value]="locations" (onSelectionChange)="setSelectedLocation($event)">
+  <p-orderList [value]="locations" (onSelectionChange)="setSelectedLocation($event)" filterPlaceholder="Filter by category name" filterBy="category.name">
+
     <ng-template let-location pTemplate="item">
       <div class="d-flex">
         <div style="flex-basis: 40%">

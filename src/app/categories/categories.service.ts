@@ -7,7 +7,8 @@ import { BehaviorSubject, Subject } from 'rxjs';
 @Injectable()
 export class CategoriesService {
 
-  readonly CATEGORIES = 'AppCategories';
+  readonly CATEGORIES = 'categories';
+  readonly CATEGORIES_ID = 'categoriesId';
 
   idGenerate = 0;
 
@@ -17,7 +18,7 @@ export class CategoriesService {
 
   categories = this.categoriesSub.asObservable();
   
-  private deleteLoctionsSub = new Subject <Location[]>();
+  private deleteLoctionsSub = new Subject <number[]>();
 
   deleteLocations = this.deleteLoctionsSub.asObservable();
 
@@ -26,22 +27,33 @@ export class CategoriesService {
   }
 
   onRefresh() {
-    window.addEventListener('pagehide', event => {
-      localStorage.setItem(this.CATEGORIES , JSON.stringify(this._catergories));
-    }, false);
+    // window.addEventListener('pagehide', event => {
+    //   localStorage.setItem(this.CATEGORIES , JSON.stringify(this._catergories));
+    //   localStorage.setItem(this.CATEGORIES_ID , JSON.stringify(this.idGenerate));
+    // }, false);
     this._catergories = JSON.parse(localStorage.getItem(this.CATEGORIES)) || [];
+    this.idGenerate = JSON.parse(localStorage.getItem(this.CATEGORIES_ID)) || 0;
     this.categoriesSub.next(this._catergories);
+  }
+  
+  saveToStorage(){
+    localStorage.removeItem(this.CATEGORIES);
+    localStorage.removeItem(this.CATEGORIES_ID);
+    localStorage.setItem(this.CATEGORIES , JSON.stringify(this._catergories));
+    localStorage.setItem(this.CATEGORIES_ID , JSON.stringify(this.idGenerate));
   }
 
   addCategory(name: string) {
     this._catergories.push(new Category(name, this.genId()));
     this.categoriesSub.next(this._catergories);
+    this.saveToStorage();
   }
   
   editCategory(id: number, name:string) {
     const category: Category = this._catergories.find(cat => cat.id === id);
     category.name = name;
     this.categoriesSub.next(this._catergories);
+    this.saveToStorage();
   }
   
   deleteCategory(id: number){
@@ -51,22 +63,26 @@ export class CategoriesService {
     }
     this._catergories.splice(this._catergories.findIndex(cat=> cat.id === id));
     this.categoriesSub.next(this._catergories);
+    this.saveToStorage();
   }
-
+  
   removeLocationFromCategory(catId, location: Location){
     let category: Category = this._catergories.find(cat => cat.id === catId);
-    category.locations.splice(category.locations.findIndex(loc => loc.id === location.id))
+    category.locations.splice(category.locations.findIndex(loc => loc === location.id))
     this.categoriesSub.next(this._catergories);
+    this.saveToStorage();
   }
-
+  
   addLocationToCategory(catId, location: Location){
     let category: Category = this._catergories.find(cat => cat.id === catId);
-    category.locations.push(location);
+    category.locations.push(location.id);
     this.categoriesSub.next(this._catergories);
+    this.saveToStorage();
   }
-
+  
   private genId(): number {
     this.idGenerate++;
+    this.saveToStorage();
     return this.idGenerate;
   }
 }
