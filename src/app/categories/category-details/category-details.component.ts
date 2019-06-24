@@ -32,7 +32,9 @@ export class CategoryDetailsComponent implements OnInit {
     this.editMode = this.config.data.edit;
     this.editMode? this.categoryForm.enable() : this.categoryForm.disable();
 
-    this.loctionNames = this.ls.getLoctionNames(this.category.locations);
+    if(this.category && this.category.locations.length > 0){
+      this.loctionNames = this.ls.getLoctionNames(this.category.locations);
+    }
   }
 
   onSubmit(){
