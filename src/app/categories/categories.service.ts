@@ -27,10 +27,9 @@ export class CategoriesService {
   }
 
   onRefresh() {
-    // window.addEventListener('pagehide', event => {
-    //   localStorage.setItem(this.CATEGORIES , JSON.stringify(this._catergories));
-    //   localStorage.setItem(this.CATEGORIES_ID , JSON.stringify(this.idGenerate));
-    // }, false);
+    window.addEventListener('pagehide', event => {
+      this.saveToStorage();
+    }, false);
     this._catergories = JSON.parse(localStorage.getItem(this.CATEGORIES)) || [];
     this.idGenerate = JSON.parse(localStorage.getItem(this.CATEGORIES_ID)) || 0;
     this.categoriesSub.next(this._catergories);
@@ -46,14 +45,12 @@ export class CategoriesService {
   addCategory(name: string) {
     this._catergories.push(new Category(name, this.genId()));
     this.categoriesSub.next(this._catergories);
-    this.saveToStorage();
   }
   
   editCategory(id: number, name:string) {
     const category: Category = this._catergories.find(cat => cat.id === id);
     category.name = name;
     this.categoriesSub.next(this._catergories);
-    this.saveToStorage();
   }
   
   deleteCategory(id: number){
@@ -61,28 +58,24 @@ export class CategoriesService {
     if(category.locations && category.locations.length > 0){
       this.deleteLoctionsSub.next(category.locations);
     }
-    this._catergories.splice(this._catergories.findIndex(cat=> cat.id === id));
+    this._catergories.splice(this._catergories.findIndex(cat=> cat.id === id), 1);
     this.categoriesSub.next(this._catergories);
-    this.saveToStorage();
   }
   
   removeLocationFromCategory(catId, location: Location){
     let category: Category = this._catergories.find(cat => cat.id === catId);
-    category.locations.splice(category.locations.findIndex(loc => loc === location.id))
+    category.locations.splice(category.locations.findIndex(loc => loc === location.id), 1)
     this.categoriesSub.next(this._catergories);
-    this.saveToStorage();
   }
   
   addLocationToCategory(catId, location: Location){
     let category: Category = this._catergories.find(cat => cat.id === catId);
     category.locations.push(location.id);
     this.categoriesSub.next(this._catergories);
-    this.saveToStorage();
   }
   
   private genId(): number {
     this.idGenerate++;
-    this.saveToStorage();
     return this.idGenerate;
   }
 }

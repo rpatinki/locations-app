@@ -19,6 +19,9 @@ export class LocationsService {
   locations = this.locationsSub.asObservable();
 
   constructor(private cs: CategoriesService) {
+    window.addEventListener('pagehide', event => {
+      this.saveToStorage();
+    }, false);
     this.onRefresh();
     this.cs.deleteLocations.subscribe( (locations: number[])  => locations.forEach(loc => this.deleteLocationOnly(loc)))
   }
@@ -30,6 +33,8 @@ export class LocationsService {
   }
 
   saveToStorage(){
+    localStorage.removeItem(this.LOCATIONS);
+    localStorage.removeItem(this.LOCATIONS_ID);
     localStorage.setItem(this.LOCATIONS , JSON.stringify(this._locations));
     localStorage.setItem(this.LOCATIONS_ID , JSON.stringify(this.idGenerate));
   }
@@ -39,7 +44,6 @@ export class LocationsService {
     const location: Location = this._locations[this._locations.length -1];
     this.cs.addLocationToCategory(cat.id, location);
     this.locationsSub.next(this._locations);
-    this.saveToStorage();
   }
   
   editLocation(id, name, lat, long, address, cat: Category) {
@@ -56,25 +60,28 @@ export class LocationsService {
     
     location.category = cat;
     this.locationsSub.next(this._locations);
-    this.saveToStorage();
   }
   
   deleteLocation(location: Location){
     this.cs.removeLocationFromCategory(location.category.id, location);   
-    this._locations.splice(this._locations.findIndex(loc => loc.id === location.id));
+    this._locations.splice(this._locations.findIndex(loc => loc.id === location.id), 1);
     this.locationsSub.next(this._locations);
-    this.saveToStorage();
   }
 
   deleteLocationOnly(location: number){
-    this._locations.splice(this._locations.findIndex(loc => loc.id === location));
+    this._locations.splice(this._locations.findIndex(loc => loc.id === location), 1);
     this.locationsSub.next(this._locations);
-    this.saveToStorage();
+  }
+  
+  getLoctionNames(locationIds: number[]) : string[]  {
+    return locationIds.map(id => {
+      const location = this._locations.find(loc => loc.id === id); 
+      return location.name;
+    })
   }
   
   private genId(): number {
     this.idGenerate++;
     return this.idGenerate;
-    this.saveToStorage();
   }
 }
